@@ -1,0 +1,1 @@
+Press 'S' to start, then cotrol your racket with arrows and try to avoid the rocks. Every rock that you avoided is +1 point. You have got 3 lifes and a few seconds of recovery after a death. Try to get the most points, good luck!
