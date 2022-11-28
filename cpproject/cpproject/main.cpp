@@ -6,14 +6,19 @@
 
 const int W=503;
 const int H=667;
+sf::RenderWindow window(sf::VideoMode(W,H), "Sky Turbulation");
 
 class entity{
     private:
         std::string name;
 public:
-    void setName(std::string name2){
+    virtual void setName(std::string name2){
         name = name2;
     }
+    virtual void draw()
+   {
+        std::cout<<"just check"<<std::endl;
+   }
 };
 
 class rocks: public entity
@@ -48,8 +53,12 @@ class rocks: public entity
         return cancollide;
     }
     
-    void draw(sf::RenderWindow &window, sf::Texture texture)
+    void draw()
    {
+        sf::Texture texture;
+        if (!texture.loadFromFile(resourcePath() + "rock.png")) {
+            return EXIT_FAILURE;
+        }
         if(getLife()==true){
             setCancollide(true);
             sf::Sprite sprite(texture);
@@ -77,15 +86,22 @@ class player: public entity
         name = "player";
     }
     
-    void draw(sf::RenderWindow &window, sf::Texture texture)
+    
+    void draw()
    {
-     sf::Sprite sprite(texture);
-     sprite.setPosition(x,y);
-     boundingBox = sprite.getGlobalBounds();
-     window.draw(sprite);
+        sf::Texture texture;
+        if (!texture.loadFromFile(resourcePath() + "racket.png")) {
+            return EXIT_FAILURE;
+        }
+        sf::Sprite sprite(texture);
+        sprite.setPosition(x,y);
+        boundingBox = sprite.getGlobalBounds();
+        window.draw(sprite);
    }
 
 };
+
+void DRAW(entity &entity){ entity.draw(); }
         
 bool collision(player racket, rocks rock)
 {
@@ -102,7 +118,6 @@ int main(int, char const**)
     bool start=false;
     int points=0;
     int lifes=3;
-    sf::RenderWindow window(sf::VideoMode(W,H), "Sky Turbulation");
     
     sf::Image icon;
     if (!icon.loadFromFile(resourcePath() + "icon.png")) {
@@ -110,14 +125,8 @@ int main(int, char const**)
     }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     
-    sf::Texture texture,texture2,texture3,texture4;
+    sf::Texture texture,texture4;
     if (!texture.loadFromFile(resourcePath() + "sky.jpeg")) {
-        return EXIT_FAILURE;
-    }
-    if (!texture2.loadFromFile(resourcePath() + "racket.png")) {
-        return EXIT_FAILURE;
-    }
-    if (!texture3.loadFromFile(resourcePath() + "rock.png")) {
         return EXIT_FAILURE;
     }
     if (!texture4.loadFromFile(resourcePath() + "heart.png")) {
@@ -149,7 +158,7 @@ int main(int, char const**)
     
     text3.setFont(font);
     text3.setCharacterSize(100);
-    text3.setPosition(200.f, 0);
+    text3.setPosition(150.f, 0);
     text3.setFillColor(sf::Color::White);
    
     player racket = *new player();
@@ -241,7 +250,7 @@ int main(int, char const**)
                 rock.setLife(true);
                 rock.x=rand()%W;
             }
-            else rock.y+=0.15;
+            else rock.y+=0.70;
             
             if(rock2.y>600.f){
                 points++;
@@ -249,7 +258,7 @@ int main(int, char const**)
                 rock2.setLife(true);
                 rock2.x=rand()%W;
             }
-            else rock2.y+=0.35;
+            else rock2.y+=0.40;
             
             if(rock3.y>600.f){
                 points++;
@@ -257,7 +266,7 @@ int main(int, char const**)
                 rock3.setLife(true);
                 rock3.x=rand()%W;
             }
-            else rock3.y+=0.45;
+            else rock3.y+=0.50;
             
             if(rock4.y>600.f){
                 points++;
@@ -265,7 +274,7 @@ int main(int, char const**)
                 rock4.setLife(true);
                 rock4.x=rand()%W;
             }
-            else rock4.y+=0.25;
+            else rock4.y+=0.30;
             
             if(rock5.y>600.f){
                 points++;
@@ -273,7 +282,7 @@ int main(int, char const**)
                 rock5.setLife(true);
                 rock5.x=rand()%W;
             }
-            else rock5.y+=0.3;
+            else rock5.y+=0.55;
             
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                 if(racket.x<450.f) racket.x+=0.5;
@@ -302,17 +311,17 @@ int main(int, char const**)
                window.draw(heart1);
            }
             if(lifes>0){
-                rock.draw(window, texture3);
-                rock2.draw(window, texture3);
-                rock3.draw(window, texture3);
-                rock4.draw(window, texture3);
-                rock5.draw(window, texture3);
+                DRAW(rock);
+                DRAW(rock2);
+                DRAW(rock3);
+                DRAW(rock4);
+                DRAW(rock5);
             }
            if(lifes>0 && wait>400 && wait%2==0){
-            racket.draw(window, texture2);
+               DRAW(racket);
            }
            else if(lifes>0 && wait<400){
-             racket.draw(window, texture2);
+             racket.draw();
            }
            if(lifes==0){
                window.draw(text);
